@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#9b2c2c">
-<meta name="description" content="中国护照、在澳洲申请日本 eVISA：填一次信息，生成英文行程表、网站逐栏填写对照表和材料清单。数据只保存在你的浏览器里。">
+<meta name="description" content="中国护照、在澳洲申请日本 eVISA：填一次信息，检查文件、生成英文行程表和材料清单，再让 AI 帮你在官网填表。数据只保存在你的浏览器里。">
 <title>日本 eVISA 填表助手｜在澳洲 · 中国护照</title>
 <style>
 :root{--red:#9b2c2c;--ink:#2b2522;--muted:#6f6560;--paper:#faf7f2;--card:#fff;--line:#e7ded4;--soft:#f6efe6;--ok:#2f6b4f;--warn:#a15c00}
@@ -67,6 +67,21 @@ footer a{color:var(--red)}
  #schedule,#schedule *{visibility:visible}
  #schedule{position:absolute;left:0;top:0;width:100%;border:0;padding:0}
 }
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px}
+.flow b{display:block;color:var(--red);font-size:12px;letter-spacing:1px;margin-bottom:4px}
+.flow .who{display:inline-block;font-size:11px;border-radius:9px;padding:0 7px;margin-top:6px;background:var(--soft);color:var(--muted)}
+.drop{border:2px dashed #d9cfc4;border-radius:12px;padding:12px;background:#fffdfa}
+.drop label{font-weight:600}
+.drop input[type=file]{border:0;padding:6px 0;background:none}
+.fres{font-size:13px;margin:6px 0 0;padding-left:18px}
+.fres li{margin:2px 0}
+#aiPrompt{min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.ais{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+.ais div{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;background:#fffdfa}
+.checks label{display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:6px 0}
+.checks input{width:auto;margin-top:4px}
+@media (max-width:720px){.flow,.ais{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -74,9 +89,16 @@ footer a{color:var(--red)}
 <header class="top"><span class="brand">JAPAN eVISA · 填表助手</span><span>在澳洲 · 中国护照</span></header>
 
 <section class="hero">
-<h1>填一次信息，<br><span>日本签证材料一次生成。</span></h1>
-<p class="lead">适合拿中国护照、在澳洲申请日本电子签证（JAPAN eVISA）的人。填完下面的表，自动生成英文行程表 PDF、eVISA 网站每一栏的填写内容，以及按你的身份列出的材料清单。</p>
+<h1>填一次信息，<br><span>让 AI 帮你填日本签证。</span></h1>
+<p class="lead">适合拿中国护照、在澳洲申请日本电子签证（JAPAN eVISA）的人。填完下面的表，网页帮你检查文件、生成英文行程表和材料清单，再生成一段"填表指令"，交给能操作浏览器的 AI，让它在 eVISA 官网上帮你一栏一栏填好。</p>
 <div class="privacy">🔒 所有内容只保存在你自己的浏览器里，不会上传到任何服务器。护照号、身份证号、银行卡号这里不需要填，到 eVISA 网站上自己输入。</div>
+<div class="flow" aria-label="使用流程">
+<div><b>① 填信息</b>在这个网页上填护照、行程、住宿，选你的身份。<br><span class="who">你 · 5 分钟</span></div>
+<div><b>② 检查文件</b>把机票、银行流水等拖进来，网页在你电脑上帮你查有没有问题。<br><span class="who">网页自动</span></div>
+<div><b>③ 生成材料</b>英文行程表一键存 PDF，按身份列出要交的材料。<br><span class="who">网页自动</span></div>
+<div><b>④ AI 帮你填表</b>复制"给 AI 的填表指令"，发给能操作浏览器的 AI，它会在 eVISA 官网上一栏一栏帮你填好、传好文件。<br><span class="who">AI</span></div>
+<div><b>⑤ 你检查、提交</b>AI 停在确认页，你自己核对一遍，输入护照号，点 Submit。<br><span class="who">你 · 最后一步</span></div>
+</div>
 </section>
 
 <section class="card">
@@ -189,6 +211,33 @@ footer a{color:var(--red)}
 </section>
 
 <section class="card">
+<div class="step">STEP 7</div>
+<h2>检查你的文件</h2>
+<p class="note">把准备好的文件拖进来，网页会在你自己的电脑上读取并检查，文件不会上传。扫描件或图片版 PDF 读不出文字，需要你自己核对。</p>
+<div class="grid" id="drops"></div>
+</section>
+
+<section class="card">
+<div class="step">STEP 8</div>
+<h2>让 AI 帮你填表</h2>
+<p class="note">把下面这段指令发给能操作浏览器的 AI，它会打开 eVISA 官网帮你逐栏填写、上传文件，最后停在确认页等你检查。护照号和最后的提交由你自己来。</p>
+<div class="ais">
+<div><b>Claude in Chrome</b><br>Chrome 扩展。在 Chrome 里打开并登录 eVISA 网站，把指令发给 Claude。</div>
+<div><b>ChatGPT Agent 模式</b><br>在 ChatGPT 里开启 Agent，把指令发过去，登录那一步需要你接手。</div>
+<div><b>其他浏览器 AI</b><br>任何能看网页、点按钮、上传文件的 AI 都可以，比如 Perplexity Comet。</div>
+</div>
+<div class="checks">
+<label><input type="checkbox" id="bgNo">我确认背景调查 6 题（犯罪、1 年以上监禁、遣返、毒品、卖淫、人口贩卖）都没有，让 AI 都选 No。没勾的话，AI 会到这一步停下来问你。</label>
+<label><input type="checkbox" id="selfFund" checked>旅费是我自己出</label>
+<label><input type="checkbox" id="isSelf" checked>是我本人在申请</label>
+</div>
+<p class="note">上传文件前，先把所有文件放进电脑上同一个文件夹，文件名和下面指令里写的一致（STEP 7 拖进来的文件会自动用它的文件名）。</p>
+<div class="row-actions"><button type="button" class="primary" id="copyAI">复制给 AI 的填表指令</button></div>
+<textarea id="aiPrompt" readonly aria-label="给 AI 的填表指令" style="margin-top:10px"></textarea>
+<p class="note">安全提醒：只在官网 www.evisa.mofa.go.jp 上让 AI 操作；AI 遇到护照号、提交按钮都应该停下来等你；不要把护照照片、银行流水发到聊天记录以外的地方。</p>
+</section>
+
+<section class="card">
 <div class="row-actions">
 <button type="button" id="exportBtn">导出我的信息（JSON）</button>
 <button type="button" id="importBtn">导入</button>
@@ -204,6 +253,7 @@ footer a{color:var(--red)}
 </footer>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const KEY='jp-evisa-helper-v1';
 const TYPES=[
@@ -333,7 +383,7 @@ function renderSchedule(){const f=state.f,ds=dateRange(f.entry,f.exit);const nam
 function render(){const t=type();$('#empNameL').firstChild.textContent=t.emp==='school'?'学校名称':t.emp==='none'?'学校 / 公司名称（没有可以不填）':'公司名称';
  $('#issues').innerHTML=issues().map(([c,s])=>`<li class="${c}">${c==='good'?'✅':c==='bad'?'❌':'⚠️'} ${esc(s)}</li>`).join('');
  $('#checklist').innerHTML=checklist().map(s=>`<li>${esc(s)}</li>`).join('');
- renderSchedule();renderFields();save();}
+ renderSchedule();renderFields();if(typeof renderAI==='function'){renderAI();}if(typeof mountDrops==='function'&&window._lastType!==state.type){window._lastType=state.type;mountDrops();}save();}
 
 document.addEventListener('input',e=>{const el=e.target;
  if(el.dataset.k){state.f[el.dataset.k]=el.value;if(el.dataset.k==='entry'||el.dataset.k==='exit')mountDays();render();}
@@ -351,6 +401,111 @@ $('#importBtn').onclick=()=>$('#importFile').click();
 $('#importFile').onchange=async e=>{try{const p=JSON.parse(await e.target.files[0].text());if(!p.f)throw 0;state=Object.assign({type:'student',f:{},accs:[{}],days:{}},p);mountAll();$('#msg').textContent='已导入。';}catch(err){$('#msg').textContent='文件格式不对，导入失败。';}};
 $('#clearBtn').onclick=()=>{if(confirm('清空所有已填写的内容？')){try{localStorage.removeItem(KEY);}catch(e){}location.reload();}};
 function mountAll(){mountTypes();mountFields();mountAccs();mountDays();render();}
+/* ---------- STEP 7: 本地文件检查 ---------- */
+const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+const today=new Date();today.setHours(0,0,0,0);
+const fileState={};
+const SLOTS=[
+ {id:'photo',name:'证件照',accept:'image/*',suggest:'01_photo.jpg'},
+ {id:'passport',name:'护照资料页扫描件',accept:'image/*,application/pdf',suggest:'02_passport.pdf'},
+ {id:'ticket',name:'机票确认单（带 PNR）',accept:'application/pdf,image/*',suggest:'03_flight.pdf'},
+ {id:'bank',name:'银行流水',accept:'application/pdf,image/*',suggest:'04_bank_statement.pdf'},
+ {id:'schedule',name:'行程表 + 住宿确认（合并后）',accept:'application/pdf',suggest:'05_schedule_of_stay.pdf'},
+ {id:'enrol',name:'在读证明 + 学生卡',accept:'application/pdf,image/*',suggest:'06_proof_of_enrolment.pdf',only:'student'},
+ {id:'vevo',name:'VEVO',accept:'application/pdf',suggest:'07_vevo.pdf'}
+];
+function slots(){return SLOTS.filter(x=>!x.only||x.only===state.type);}
+function mountDrops(){$('#drops').innerHTML=slots().map(x=>`<div class="drop"><label>${x.name}<input type="file" data-slot="${x.id}" accept="${x.accept}"></label><ul class="fres" id="res-${x.id}">${(fileState[x.id]?.res||[]).map(r=>`<li class="${r[0]}">${esc(r[1])}</li>`).join('')||'<li class="note">还没放文件</li>'}</ul></div>`).join('');}
+function findDates(t){const out=[];let m;
+ const r1=/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+(20\d{2})/gi;while((m=r1.exec(t)))out.push(new Date(+m[3],MON[m[2].toLowerCase()],+m[1]));
+ const r2=/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2}),?\s+(20\d{2})/gi;while((m=r2.exec(t)))out.push(new Date(+m[3],MON[m[1].toLowerCase()],+m[2]));
+ const r3=/\b(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})\b/g;while((m=r3.exec(t))){let y=+m[3];if(y<100)y+=2000;if(+m[2]<=12)out.push(new Date(y,+m[2]-1,+m[1]));}
+ const r4=/\b(20\d{2})[-\/年.]?(0[1-9]|1[0-2])[-\/月.]?([0-2]\d|3[01])\b/g;while((m=r4.exec(t)))out.push(new Date(+m[1],+m[2]-1,+m[3]));
+ const lim=new Date(today.getTime()+864e5);return out.filter(d=>!isNaN(d)&&d<=lim&&d>new Date(today.getTime()-500*864e5));}
+const days=(a,b)=>Math.round((a-b)/864e5);
+async function pdfText(file){if(!window.pdfjsLib)return null;pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const doc=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;let t='';for(let i=1;i<=Math.min(doc.numPages,15);i++){const c=await(await doc.getPage(i)).getTextContent();t+=c.items.map(x=>x.str).join(' ')+'\n';}return t;}
+function nameOK(T){const f=state.f;return (!f.surname||T.includes(up(f.surname)))&&(!f.given||T.includes(up(f.given)));}
+function addrKey(){const m=(state.f.addr||'').toUpperCase().match(/(\d+[A-Z]?)\s+([A-Z]+)/);return m?m[1]+' '+m[2]:'';}
+async function checkFile(slot,file){const R=[];const kb=Math.round(file.size/1024);const isPdf=/pdf$/i.test(file.type)||/\.pdf$/i.test(file.name);
+ if(slot==='photo'){if(!/jpe?g|png/i.test(file.type))R.push(['warn','建议用 JPG 或 PNG。']);
+  R.push([kb>150?'bad':'good',`文件 ${kb}KB${kb>150?'，可能超过网站上限，建议压到 100KB 左右':'，大小合适'}`]);
+  await new Promise(res=>{const img=new Image();img.onload=()=>{const r=img.height/img.width;R.push([Math.abs(r-45/35)<0.08?'good':'warn',`尺寸 ${img.width}×${img.height}${Math.abs(r-45/35)<0.08?'，比例接近 35×45':'，比例不是 35×45，建议裁剪'}`]);if(img.width<350)R.push(['warn','分辨率偏低，建议至少 413×531 像素。']);URL.revokeObjectURL(img.src);res();};img.onerror=res;img.src=URL.createObjectURL(file);});
+  R.push(['warn','网页看不出有没有美颜或滤镜，请确认用的是原相机照片，表情自然不笑。']);return R;}
+ if(file.size>10*1024*1024)R.push(['warn',`文件 ${kb}KB，比较大，上传可能失败，建议压缩。`]);
+ if(!isPdf){R.push(['warn','这是图片，网页读不出文字，请自己核对内容。']);return R;}
+ let text=null;try{text=await pdfText(file);}catch(e){R.push(['warn','读取 PDF 失败，请自己核对内容。']);return R;}
+ if(text===null){R.push(['warn','检查组件没有加载，请联网后刷新再试。']);return R;}
+ const T=text.toUpperCase().replace(/\s+/g,' ');
+ if(T.trim().length<30){R.push(['warn','这份 PDF 是扫描件，读不出文字，请自己核对内容。']);return R;}
+ const nm=nameOK(T);R.push([nm?'good':'bad',nm?'找到你的姓名':'没找到你填的姓名，确认文件是不是本人的、姓名拼写是否一致']);
+ if(slot==='ticket'){const p=up(state.f.pnr);
+  if(p)R.push([T.includes(p)?'good':'bad',T.includes(p)?`找到 PNR ${p}`:`没找到你填的 PNR ${p}`]);else R.push(['warn','STEP 4 还没填 PNR']);
+  ['flightIn','flightOut'].forEach(k=>{const fn=((state.f[k]||'').toUpperCase().match(/[A-Z0-9]{2}\s?\d{2,4}\b/)||[''])[0].replace(/\s/,'');if(fn)R.push([T.replace(/\s/g,'').includes(fn)?'good':'bad',T.replace(/\s/g,'').includes(fn)?`找到航班 ${fn}`:`没找到航班 ${fn}`]);});
+  if(/AWAITING PAYMENT|待付款/.test(T))R.push(['warn','页面写着待付款。如果上面没有航空公司 PNR，领事馆不收。']);}
+ if(slot==='bank'){const ds=findDates(text);if(ds.length){const last=new Date(Math.max(...ds)),first=new Date(Math.min(...ds));
+   R.push([days(today,last)<=31?'good':'bad',`最近的日期是 ${last.toLocaleDateString('zh-CN')}${days(today,last)<=31?'，在 1 个月内':'，超过 1 个月了，要重新开'}`]);
+   R.push([days(last,first)>=85?'good':'bad',`覆盖 ${first.toLocaleDateString('zh-CN')} 到 ${last.toLocaleDateString('zh-CN')}${days(last,first)>=85?'，有 3 个月记录':'，不到 3 个月'}`]);}
+  else R.push(['warn','没读到日期，请自己确认是 1 个月内开的、有 3 个月记录。']);
+  const ak=addrKey();if(ak)R.push([T.includes(ak)?'good':'bad',T.includes(ak)?'地址和你填的现住址一致':'没找到你填的现住址，银行登记的可能是旧地址']);
+  R.push([/BALANCE|余额/.test(T)?'good':'warn',/BALANCE|余额/.test(T)?'有余额信息':'没看到余额（Balance），确认文件里有']);}
+ if(slot==='vevo'){R.push([/VEVO|VISA ENTITLEMENT/.test(T)?'good':'bad',/VEVO|VISA ENTITLEMENT/.test(T)?'是 VEVO 文件':'看起来不是 VEVO 文件']);
+  const ds=findDates(text);if(ds.length){const last=new Date(Math.max(...ds));R.push([days(today,last)<=31?'good':'warn',`查询日期 ${last.toLocaleDateString('zh-CN')}${days(today,last)<=31?'':'，建议重新查一份最新的'}`]);}
+  const vc=T.match(/VISA CLASS\s*\/\s*SUBCLASS\s+([A-Z]{2})\s*\/\s*(\d{3})/);
+  if(vc){const sc=vc[2],bv=/^0[1-5]\d$/.test(sc);R.push(['good',`签证类型 ${vc[1]} / ${sc}`]);
+   if(bv&&state.type!=='bridging')R.push(['warn','VEVO 显示是过桥签，STEP 1 请选"持过桥签"，还要交签证申请受理信。']);
+   if(sc==='500'&&state.type!=='student')R.push(['warn','VEVO 显示是 500 学生签，STEP 1 请选"学生"，还要交在读证明。']);
+   if(/^(417|462)$/.test(sc)&&state.type!=='whv')R.push(['warn',`VEVO 显示是 ${sc} 打工度假签，STEP 1 可以选"打工度假"。`]);}}
+ if(slot==='enrol'){const coe=/CONFIRMATION OF ENROLMENT|\bCOE\b/.test(T)&&!/STATEMENT OF ENROL|LETTER OF ENROL|ENROLMENT LETTER/.test(T);
+  R.push([coe?'bad':'good',coe?'这看起来是 COE，领事馆不收，要换成学校的在读证明或学生卡':'不是 COE']);}
+ if(slot==='schedule'){R.push([/SCHEDULE OF STAY/.test(T)?'good':'warn',/SCHEDULE OF STAY/.test(T)?'有行程表':'没找到 "Schedule of Stay"，确认合并了行程表']);
+  const a=state.accs.find(a=>a.name);if(a)R.push([T.includes(up(a.name))?'good':'warn',T.includes(up(a.name))?'有住宿信息':'没找到住宿名称']);}
+ return R;}
+document.addEventListener('change',async e=>{const el=e.target;if(!el.dataset.slot||!el.files[0])return;const f=el.files[0];fileState[el.dataset.slot]={name:f.name,res:[['note','检查中…']]};mountDrops();
+ fileState[el.dataset.slot].res=await checkFile(el.dataset.slot,f);mountDrops();renderAI();});
+
+/* ---------- STEP 8: 给 AI 的填表指令 ---------- */
+function age(){const d=state.f.dob;if(!d)return null;const b=new Date(d+'T00:00:00');let a=today.getFullYear()-b.getFullYear();if(today<new Date(today.getFullYear(),b.getMonth(),b.getDate()))a--;return a;}
+function aiPrompt(){const t=type();if(t.id==='citizen')return '用澳洲护照的澳洲公民短期旅游不需要日本签证，不用申请。';
+ const R=rows();const bg=$('#bgNo')?.checked,sf=$('#selfFund')?.checked,me=$('#isSelf')?.checked;const a=age();
+ const L=[];
+ L.push('请你用浏览器帮我在日本外务省 JAPAN eVISA 网站（https://www.evisa.mofa.go.jp ）填写一份短期旅游签证申请。只在这个官网上操作。');
+ L.push('');L.push('【必须遵守】');
+ L.push('1. 登录账号由我自己完成。如果没登录，停下来让我登录。');
+ L.push('2. 护照号、身份证号这些证件号码由我自己输入。到 Passport number 这一栏时停下来，等我填好再继续。');
+ L.push('3. 不要点最后的 Submit（提交）。全部填完、文件传完后，点 Check 进入确认页，然后停下来让我检查。');
+ L.push('4. 只用一个标签页操作这个网站，在别的标签页打开它会导致 session 失效、内容丢失。');
+ L.push('5. 如果出现 "An applicant who cannot make a visa application is included"，说明我还有一份申请在进行中，停下来告诉我。');
+ L.push('6. 不确定的栏目不要猜，停下来问我。');
+ L.push('');L.push('【这个网站的操作技巧】');
+ L.push('- 日期框直接输入 8 位数字 YYYYMMDD（例如 20261120），然后按 Esc 关闭日历，不要在已有内容后面接着输入。');
+ L.push('- 国籍、其他国籍、旅行目的（category / details）是可搜索的下拉框：点开 → 输入选项文字 → 点选结果。选完 category 后要等 details 的选项刷新再选。');
+ L.push('- 电话只能用半角数字和 "-"，不能带 "+"，少于 15 个字符。');
+ L.push('- "Check here if none" 这类勾选框，勾之前先看是不是已经勾上了，避免点两次又取消。');
+ L.push('- 照片上传后如果提示 "Cut out a facial photo manually"：点 "Cut out the face manually"，拖动红框右下角的小方块，让红色椭圆包住整个头（头顶到下巴），红框不要超出照片边缘，点 "Execute Cut-out"。');
+ L.push('- 每个文件上传后，等它显示 "Uploaded" 或 "Clear" 再传下一个。');
+ L.push('');L.push('【流程】Visa application list → New registration → 同意声明（Disclaimer）→ Basic information → Travel information → Address → Background check → Supporting documents → Check → 停下');
+ L.push('');L.push('【每一栏填写的内容】');
+ R.forEach(([g,rs])=>{if(g==='Background check'||g==='Supporting documents')return;L.push('');L.push(`## ${g}`);rs.forEach(([k,v])=>{if(k==='Facial photo'||k==='Passport')return;L.push(`- ${k}：${v||'（我还没提供，停下来问我）'}`);});});
+ L.push('');L.push('## Background check');
+ L.push('- Special reasons for visa application：勾 "Check here if none"');
+ L.push(bg?'- 6 道背景题（犯罪、1 年以上监禁、遣返、毒品、卖淫、人口贩卖）：我确认都没有，全部选 No':'- 6 道背景题：到这里停下来，一题一题问我');
+ L.push(`- Will the applicant's travel expenses be self-funded?：${sf?'Yes':'No（停下来问我资助人信息）'}`);
+ L.push(`- Is the applicant a minor?：${a===null?'停下来问我':a<18?'Yes':'No'}`);
+ L.push(`- Are you the applicant yourself?：${me?'Yes':'No'}`);
+ L.push('');L.push('## Supporting documents（文件都在我电脑的同一个文件夹里，上传时选这些文件名）');
+ const map={ticket:'Itinerary with flight information',bank:'Document to prove the ability to pay for travel expenses',schedule:'Schedule of stay',enrol:'Proof of enrollment issued by a university',vevo:'Document to prove legal residency (VEVO)'};
+ L.push(`- Facial photo（Basic information 页最上面）：${fileState.photo?.name||'01_photo.jpg'}`);
+ L.push(`- Passport（Basic information 页）：${fileState.passport?.name||'02_passport.pdf'}`);
+ Object.entries(map).forEach(([k,label])=>{if(k==='enrol'&&t.id!=='student'){L.push(`- ${label}：不用传`);return;}const s=SLOTS.find(x=>x.id===k);L.push(`- ${label}：${fileState[k]?.name||s.suggest}`);});
+ if(t.id==='bridging')L.push('- VEVO 那一栏要同时传 VEVO 和澳洲签证申请受理信（Acknowledgement letter）');
+ L.push('- Birth certificate、Marriage certificate：不用传');
+ L.push('');L.push('填完后告诉我：哪些栏目你没填、哪些文件没传成功、页面上有没有红色报错。');
+ return L.join('\n');}
+function renderAI(){const el=$('#aiPrompt');if(el)el.value=aiPrompt();}
+document.addEventListener('change',e=>{if(['bgNo','selfFund','isSelf'].includes(e.target.id))renderAI();});
+$('#copyAI').onclick=async()=>{const v=aiPrompt();try{await navigator.clipboard.writeText(v);$('#copyAI').textContent='已复制，发给 AI 吧';setTimeout(()=>$('#copyAI').textContent='复制给 AI 的填表指令',1800);}catch(e){$('#aiPrompt').select();}};
+
 mountAll();
 </script>
 </body>
