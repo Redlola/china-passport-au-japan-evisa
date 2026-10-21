@@ -43,7 +43,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
 th{font-size:12px;color:var(--muted);font-weight:600}
 td.val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;word-break:break-word}
-.copy{min-height:30px;padding:3px 10px;font-size:12px}
+.copy{min-height:30px;padding:3px 10px;font-size:12px;white-space:nowrap}
 .acc-row,.day-row{display:grid;gap:8px;grid-template-columns:repeat(5,minmax(0,1fr)) auto;align-items:end;margin-bottom:8px}
 .day-row{grid-template-columns:140px 1fr}
 .day-row .d{font-size:13px;font-weight:600;padding-bottom:10px}
@@ -75,7 +75,9 @@ footer a{color:var(--red)}
 .drop label{font-weight:600}
 .drop input[type=file]{border:0;padding:6px 0;background:none}
 .fres{font-size:13px;margin:6px 0 0;padding-left:18px}
-.fres li{margin:2px 0}
+.fres li{margin:2px 0;list-style:none;margin-left:-18px}
+.fres li.good::before{content:'✅ '}.fres li.bad::before{content:'❌ '}.fres li.warn::before{content:'⚠️ '}
+.fname{font-size:12px;color:var(--muted);margin-top:4px}
 #aiPrompt{min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 .ais{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
 .ais div{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;background:#fffdfa}
@@ -415,7 +417,7 @@ const SLOTS=[
  {id:'vevo',name:'VEVO',accept:'application/pdf',suggest:'07_vevo.pdf'}
 ];
 function slots(){return SLOTS.filter(x=>!x.only||x.only===state.type);}
-function mountDrops(){$('#drops').innerHTML=slots().map(x=>`<div class="drop"><label>${x.name}<input type="file" data-slot="${x.id}" accept="${x.accept}"></label><ul class="fres" id="res-${x.id}">${(fileState[x.id]?.res||[]).map(r=>`<li class="${r[0]}">${esc(r[1])}</li>`).join('')||'<li class="note">还没放文件</li>'}</ul></div>`).join('');}
+function mountDrops(){$('#drops').innerHTML=slots().map(x=>`<div class="drop"><label>${x.name}<input type="file" data-slot="${x.id}" accept="${x.accept}"></label>${fileState[x.id]?`<div class="fname">已检查：${esc(fileState[x.id].name)}</div>`:''}<ul class="fres" id="res-${x.id}">${(fileState[x.id]?.res||[]).map(r=>`<li class="${r[0]}">${esc(r[1])}</li>`).join('')||'<li class="note">还没放文件</li>'}</ul></div>`).join('');}
 function findDates(t){const out=[];let m;
  const r1=/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+(20\d{2})/gi;while((m=r1.exec(t)))out.push(new Date(+m[3],MON[m[2].toLowerCase()],+m[1]));
  const r2=/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2}),?\s+(20\d{2})/gi;while((m=r2.exec(t)))out.push(new Date(+m[3],MON[m[1].toLowerCase()],+m[2]));
