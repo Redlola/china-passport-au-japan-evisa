@@ -234,6 +234,8 @@ footer a{color:var(--red)}
 <label><input type="checkbox" id="isSelf" checked>是我本人在申请</label>
 </div>
 <p class="note">上传文件前，先把所有文件放进电脑上同一个文件夹，文件名和下面指令里写的一致（STEP 7 拖进来的文件会自动用它的文件名）。</p>
+<p class="note">AI 只会在这几处停下来等你：登录账号、输入护照号、点最后的 Submit，以及你在网页上没填的栏目。这是为了安全：证件号码不经过 AI，提交前一定由你本人确认。你在上面填过的内容，AI 都会直接照着填。</p>
+<p class="note bad" id="aiMissing"></p>
 <div class="row-actions"><button type="button" class="primary" id="copyAI">复制给 AI 的填表指令</button></div>
 <textarea id="aiPrompt" readonly aria-label="给 AI 的填表指令" style="margin-top:10px"></textarea>
 <p class="note">安全提醒：只在官网 www.evisa.mofa.go.jp 上让 AI 操作；AI 遇到护照号、提交按钮都应该停下来等你；不要把护照照片、银行流水发到聊天记录以外的地方。</p>
@@ -241,11 +243,12 @@ footer a{color:var(--red)}
 
 <section class="card">
 <div class="row-actions">
-<button type="button" id="exportBtn">导出我的信息（JSON）</button>
+<button type="button" id="exportBtn">导出我的信息（备份 / 换电脑用）</button>
 <button type="button" id="importBtn">导入</button>
 <input type="file" id="importFile" accept="application/json" class="hidden">
 <button type="button" id="clearBtn">清空全部</button>
 </div>
+<p class="note">导出是给你自己备份用的：换电脑或换浏览器时，点"导入"就能接着填。让 AI 填表不需要导出，用上面 STEP 8 的"复制给 AI 的填表指令"就行。</p>
 <p class="note" id="msg"></p>
 </section>
 
@@ -488,7 +491,7 @@ function aiPrompt(){const t=type();if(t.id==='citizen')return '用澳洲护照�
  L.push('- 每个文件上传后，等它显示 "Uploaded" 或 "Clear" 再传下一个。');
  L.push('');L.push('【流程】Visa application list → New registration → 同意声明（Disclaimer）→ Basic information → Travel information → Address → Background check → Supporting documents → Check → 停下');
  L.push('');L.push('【每一栏填写的内容】');
- R.forEach(([g,rs])=>{if(g==='Background check'||g==='Supporting documents')return;L.push('');L.push(`## ${g}`);rs.forEach(([k,v])=>{if(k==='Facial photo'||k==='Passport')return;L.push(`- ${k}：${v||'（我还没提供，停下来问我）'}`);});});
+ R.forEach(([g,rs])=>{if(g==='Background check'||g==='Supporting documents')return;L.push('');L.push(`## ${g}`);rs.forEach(([k,v])=>{if(k==='Facial photo'||k==='Passport')return;L.push(`- ${k}：${v||'（网页上没填，到这一栏停下来问我）'}`);});});
  L.push('');L.push('## Background check');
  L.push('- Special reasons for visa application：勾 "Check here if none"');
  L.push(bg?'- 6 道背景题（犯罪、1 年以上监禁、遣返、毒品、卖淫、人口贩卖）：我确认都没有，全部选 No':'- 6 道背景题：到这里停下来，一题一题问我');
@@ -504,9 +507,11 @@ function aiPrompt(){const t=type();if(t.id==='citizen')return '用澳洲护照�
  L.push('- Birth certificate、Marriage certificate：不用传');
  L.push('');L.push('填完后告诉我：哪些栏目你没填、哪些文件没传成功、页面上有没有红色报错。');
  return L.join('\n');}
-function renderAI(){const el=$('#aiPrompt');if(el)el.value=aiPrompt();}
+const NEED=[['surname','姓'],['given','名'],['dob','出生日期'],['sex','性别'],['expiry','护照到期日期'],['issue','护照签发日期'],['issuePlace','护照签发地'],['pob','出生地'],['entry','入境日期'],['exit','离境日期'],['flightIn','去程航班'],['pnr','PNR'],['addr','现住址'],['mobile','手机号'],['email','邮箱']];
+function missing(){const m=NEED.filter(([k])=>!(state.f[k]||'').trim()).map(x=>x[1]);if(!state.accs.some(a=>a.name&&a.tel&&a.addr))m.push('住宿名称 / 地址 / 电话');if(type().emp!=='none'&&!(state.f.empName||'').trim())m.push(type().emp==='school'?'学校名称':'公司名称');return m;}
+function renderAI(){const el=$('#aiPrompt');if(el)el.value=aiPrompt();const mm=$('#aiMissing');if(mm){const m=missing();mm.textContent=m.length?`还有 ${m.length} 项没填：${m.join('、')}。先回到上面补上，AI 就不用停下来问你。`:'';}}
 document.addEventListener('change',e=>{if(['bgNo','selfFund','isSelf'].includes(e.target.id))renderAI();});
-$('#copyAI').onclick=async()=>{const v=aiPrompt();try{await navigator.clipboard.writeText(v);$('#copyAI').textContent='已复制，发给 AI 吧';setTimeout(()=>$('#copyAI').textContent='复制给 AI 的填表指令',1800);}catch(e){$('#aiPrompt').select();}};
+$('#copyAI').onclick=async()=>{const m=missing();if(m.length&&!confirm(`还有 ${m.length} 项没填：${m.join('、')}。\n没填的栏目 AI 会停下来问你。仍然要复制吗？`))return;const v=aiPrompt();try{await navigator.clipboard.writeText(v);$('#copyAI').textContent='已复制，发给 AI 吧';setTimeout(()=>$('#copyAI').textContent='复制给 AI 的填表指令',1800);}catch(e){$('#aiPrompt').select();}};
 
 mountAll();
 </script>
