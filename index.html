@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#9b2c2c">
+<meta name="description" content="中国护照、在澳洲申请日本 eVISA：填一次信息，生成英文行程表、网站逐栏填写对照表和材料清单。数据只保存在你的浏览器里。">
+<title>日本 eVISA 填表助手｜在澳洲 · 中国护照</title>
+<style>
+:root{--red:#9b2c2c;--ink:#2b2522;--muted:#6f6560;--paper:#faf7f2;--card:#fff;--line:#e7ded4;--soft:#f6efe6;--ok:#2f6b4f;--warn:#a15c00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif}
+main{max-width:980px;margin:auto;padding:24px 20px 60px}
+header.top{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:1px;color:var(--muted)}
+.brand{font-weight:700;color:var(--red)}
+.hero{padding:34px 0 18px}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.25;margin:10px 0;letter-spacing:-1px}
+h1 span{color:var(--red)}
+.lead{color:var(--muted);max-width:640px;margin:0}
+.privacy{margin-top:16px;background:#eef5f0;border:1px solid #cfe3d6;color:#24543d;border-radius:12px;padding:10px 14px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}
+.step{font-size:12px;letter-spacing:2px;color:var(--red);font-weight:700}
+h2{font-size:20px;margin:6px 0 4px}
+h3{font-size:16px;margin:18px 0 8px}
+.note{font-size:13px;color:var(--muted);margin:4px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 16px}
+label{display:block;font-size:13px;font-weight:600}
+label small{font-weight:400;color:var(--muted)}
+input,select,textarea{width:100%;margin-top:5px;border:1px solid #d9cfc4;border-radius:10px;background:#fffdfa;padding:9px 10px;font:inherit;color:var(--ink)}
+textarea{min-height:64px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #f0b8a8;outline-offset:2px}
+.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.types label{border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600;background:#fffdfa}
+.types input{width:auto;margin:0 6px 0 0}
+.types label:has(input:checked){border-color:var(--red);background:#fbeeee}
+button{border:1px solid var(--line);background:var(--soft);color:var(--red);border-radius:10px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+button:hover{background:#efe3d6}
+.primary{background:var(--red);color:#fff;border:0;font-weight:700}
+.primary:hover{background:#7f2222}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;word-break:break-word}
+.copy{min-height:30px;padding:3px 10px;font-size:12px}
+.acc-row,.day-row{display:grid;gap:8px;grid-template-columns:repeat(5,minmax(0,1fr)) auto;align-items:end;margin-bottom:8px}
+.day-row{grid-template-columns:140px 1fr}
+.day-row .d{font-size:13px;font-weight:600;padding-bottom:10px}
+.issues li{margin:4px 0}
+.bad{color:#9b2c2c}.good{color:var(--ok)}.warn{color:var(--warn)}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:9px;background:var(--soft);color:var(--muted);margin-left:6px}
+.checklist li{margin:6px 0}
+.sched{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;color:#111}
+.sched h4{text-align:center;font-size:20px;margin:0 0 12px}
+.sched p{margin:2px 0;font-size:13px}
+.sched table{margin-top:12px;font-size:13px}
+.sched th,.sched td{border:1px solid #999;padding:6px}
+.sched th{background:#eef2ee;color:#111}
+.hidden{display:none}
+footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}
+footer a{color:var(--red)}
+@media (max-width:720px){.grid,.grid3{grid-template-columns:1fr}.acc-row{grid-template-columns:1fr}.day-row{grid-template-columns:1fr}.card{padding:18px 14px}}
+@media print{
+ body{background:#fff}
+ body *{visibility:hidden}
+ #schedule,#schedule *{visibility:visible}
+ #schedule{position:absolute;left:0;top:0;width:100%;border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><span class="brand">JAPAN eVISA · 填表助手</span><span>在澳洲 · 中国护照</span></header>
+
+<section class="hero">
+<h1>填一次信息，<br><span>日本签证材料一次生成。</span></h1>
+<p class="lead">适合拿中国护照、在澳洲申请日本电子签证（JAPAN eVISA）的人。填完下面的表，自动生成英文行程表 PDF、eVISA 网站每一栏的填写内容，以及按你的身份列出的材料清单。</p>
+<div class="privacy">🔒 所有内容只保存在你自己的浏览器里，不会上传到任何服务器。护照号、身份证号、银行卡号这里不需要填，到 eVISA 网站上自己输入。</div>
+</section>
+
+<section class="card">
+<div class="step">STEP 1</div>
+<h2>你在澳洲是什么身份？</h2>
+<p class="note">不同身份要准备的材料不一样。</p>
+<div class="types" id="types"></div>
+</section>
+
+<section class="card">
+<div class="step">STEP 2</div>
+<h2>个人信息（照护照填）</h2>
+<p class="note">姓名按护照底部两行机读码填，会自动转成大写。</p>
+<div class="grid">
+<label>姓 Family name<input data-k="surname" placeholder="ZHANG"></label>
+<label>名 Given names<input data-k="given" placeholder="SAN"></label>
+<label>中文姓<input data-k="hanziSur" placeholder="张"></label>
+<label>中文名<input data-k="hanziGiven" placeholder="三"></label>
+<label>出生日期<input type="date" data-k="dob"></label>
+<label>性别<select data-k="sex"><option value="">请选择</option><option value="F">Female(F)</option><option value="M">Male(M)</option></select></label>
+<label>出生地 <small>城市, 省, 国家</small><input data-k="pob" placeholder="WUHAN, HUBEI, CHINA"></label>
+<label>婚姻状况<select data-k="marital"><option value="Single">Single 单身</option><option value="Married">Married 已婚</option><option value="Divorced">Divorced 离异</option><option value="Widow / Widower">Widow / Widower 丧偶</option></select></label>
+<label>护照签发日期<input type="date" data-k="issue"></label>
+<label>护照到期日期<input type="date" data-k="expiry"></label>
+<label>护照签发地 <small>护照上的"签发地点"</small><input data-k="issuePlace" placeholder="GUANGDONG"></label>
+<label>签发机关<input data-k="authority" value="National Immigration Administration, PRC"></label>
+</div>
+</section>
+
+<section class="card">
+<div class="step">STEP 3</div>
+<h2>在澳洲的信息</h2>
+<div class="grid">
+<label>现住址 <small>门牌号 街道, 区 州 邮编</small><input data-k="addr" placeholder="12 Example Street, Leederville WA 6007"></label>
+<label>所在州<select data-k="state"><option>Western Australia</option><option>New South Wales</option><option>Victoria</option><option>Queensland</option><option>South Australia</option><option>Tasmania</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
+<label>手机号<input data-k="mobile" placeholder="0412 345 678"></label>
+<label>邮箱<input type="email" data-k="email" placeholder="you@example.com"></label>
+<label id="empNameL">学校 / 公司名称<input data-k="empName"></label>
+<label>学校 / 公司电话<input data-k="empPhone" placeholder="08 6488 6000"></label>
+<label style="grid-column:1/-1">学校 / 公司地址<input data-k="empAddr"></label>
+</div>
+</section>
+
+<section class="card">
+<div class="step">STEP 4</div>
+<h2>航班</h2>
+<p class="note">要从澳洲出发、回澳洲。机票确认单上要有航空公司预订号 PNR（6 位字母数字），不要求已付款。</p>
+<div class="grid">
+<label>入境日本日期<input type="date" data-k="entry"></label>
+<label>离开日本日期<input type="date" data-k="exit"></label>
+<label>去程航班 <small>航空公司 + 航班号</small><input data-k="flightIn" placeholder="All Nippon Airways NH882"></label>
+<label>到达时间<input type="time" data-k="flightInTime"></label>
+<label>回程航班<input data-k="flightOut" placeholder="All Nippon Airways NH881"></label>
+<label>起飞时间<input type="time" data-k="flightOutTime"></label>
+<label>去程从哪里出发<select data-k="fromAU"><option value="yes">澳洲</option><option value="no">其他国家</option></select></label>
+<label>回程飞去哪里<select data-k="toAU"><option value="yes">澳洲</option><option value="cn">中国（本国）</option><option value="no">其他国家</option></select></label>
+<label>入境机场<select data-k="port"><option>Narita International Airport</option><option>Haneda Airport</option><option>Kansai International Airport</option><option>Chubu Centrair International Airport</option><option>New Chitose Airport</option><option>Fukuoka Airport</option><option>Naha Airport</option></select></label>
+<label>航空公司预订号 PNR<input data-k="pnr" placeholder="ABC123" maxlength="8"></label>
+<label>过去一年在日本住了几天<input type="number" min="0" data-k="daysJP" value="0"></label>
+</div>
+<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:600">还没有 PNR？先不付全款怎么拿</summary>
+<ol class="note" style="font-size:14px;color:var(--ink)">
+<li>在航空公司官网订座，比如全日空 <a href="https://www.ana.co.jp/en/au/" target="_blank" rel="noopener">ana.co.jp/en/au</a>。</li>
+<li>付款方式选不立刻扣款的方式，例如全日空的 "Convenience Store"（便利店付款），点 Purchase。</li>
+<li>预订详情页最上面 6 位字母数字就是 PNR。按 Cmd / Ctrl + P 存成 PDF，就是机票确认单。</li>
+<li>占座有付款截止时间，过期会自动取消，拿到 PNR 当天就交签证。不要用"签证专用假机票"。</li>
+</ol></details>
+</section>
+
+<section class="card">
+<div class="step">STEP 5</div>
+<h2>住宿</h2>
+<p class="note">电话写日本的格式，比如 03-1234-5678，会自动去掉 +81。</p>
+<div id="accs"></div>
+<div class="row-actions"><button type="button" id="addAcc">＋ 再加一家住宿</button></div>
+</section>
+
+<section class="card">
+<div class="step">STEP 6</div>
+<h2>每天去哪里</h2>
+<p class="note">填好入境和离境日期后会自动出现每一天。写具体景点，不要只写城市名，用英文写最好。</p>
+<div id="days"></div>
+</section>
+
+<section class="card">
+<div class="step">RESULT 1</div>
+<h2>检查结果</h2>
+<ul class="issues" id="issues"></ul>
+</section>
+
+<section class="card">
+<div class="step">RESULT 2</div>
+<h2>要准备的材料</h2>
+<ul class="checklist" id="checklist"></ul>
+</section>
+
+<section class="card">
+<div class="step">RESULT 3</div>
+<h2>英文行程表 Schedule of Stay</h2>
+<p class="note">点下面的按钮，在打印窗口里选"存储为 PDF"。网站这一栏只能传一个文件，建议把这份 PDF 和住宿确认单合并成一个。</p>
+<div class="row-actions"><button type="button" class="primary" id="printBtn">存为 PDF / 打印</button></div>
+<div class="sched" id="schedule" style="margin-top:14px"></div>
+</section>
+
+<section class="card">
+<div class="step">RESULT 4</div>
+<h2>eVISA 网站逐栏填写</h2>
+<p class="note">打开 <a href="https://www.evisa.mofa.go.jp" target="_blank" rel="noopener">www.evisa.mofa.go.jp</a>，按顺序一栏一栏复制粘贴。日期按网站要求写成 YYYYMMDD，电话不带 +。</p>
+<div id="fields"></div>
+</section>
+
+<section class="card">
+<div class="row-actions">
+<button type="button" id="exportBtn">导出我的信息（JSON）</button>
+<button type="button" id="importBtn">导入</button>
+<input type="file" id="importFile" accept="application/json" class="hidden">
+<button type="button" id="clearBtn">清空全部</button>
+</div>
+<p class="note" id="msg"></p>
+</section>
+
+<footer>
+<p>按日本驻珀斯总领事馆官网要求和实际申请经验整理，规则可能变化，请以 <a href="https://www.perth.au.emb-japan.go.jp/itpr_ja/11_000001_00495.html" target="_blank" rel="noopener">领事馆官网</a> 为准。其他州请看所在州日本领事馆的要求。</p>
+<p>这不是官方网站，也不是签证代办服务。</p>
+</footer>
+</main>
+
+<script>
+const KEY='jp-evisa-helper-v1';
+const TYPES=[
+ {id:'student',name:'学生（500）',occ:'Student',emp:'school'},
+ {id:'worker',name:'上班族 / 工作签 / PR 在职',occ:'Office worker',emp:'company'},
+ {id:'business',name:'自己做生意',occ:'Independent Business',emp:'company'},
+ {id:'whv',name:'打工度假（417 / 462）',occ:'Office worker',emp:'company'},
+ {id:'unemployed',name:'没有工作',occ:'Unemployed',emp:'none'},
+ {id:'bridging',name:'持过桥签',occ:'',emp:'company'},
+ {id:'citizen',name:'澳洲公民（澳洲护照）',occ:'',emp:'none'}
+];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let state={type:'student',f:{authority:'National Immigration Administration, PRC',daysJP:'0',fromAU:'yes',toAU:'yes',marital:'Single',state:'Western Australia',port:'Narita International Airport'},accs:[{}],days:{}};
+try{const s=localStorage.getItem(KEY);if(s){const p=JSON.parse(s);if(p&&p.f)state=Object.assign(state,p);}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+const ymd=d=>d?d.replace(/-/g,''):'';
+const slash=d=>d?d.replace(/-/g,'/'):'';
+const up=s=>(s||'').trim().toUpperCase();
+function jpPhone(p){p=(p||'').replace(/[^\d+]/g,'');if(p.startsWith('+81'))p='0'+p.slice(3);else if(p.startsWith('81')&&p.length>10)p='0'+p.slice(2);p=p.replace(/\D/g,'');
+ if(/^0[36]\d{8}$/.test(p))return p.slice(0,2)+'-'+p.slice(2,6)+'-'+p.slice(6);
+ if(/^0[789]0\d{8}$/.test(p))return p.slice(0,3)+'-'+p.slice(3,7)+'-'+p.slice(7);
+ if(/^0\d{9}$/.test(p))return p.slice(0,3)+'-'+p.slice(3,6)+'-'+p.slice(6);return p;}
+function auPhone(p){p=(p||'').replace(/[^\d+]/g,'');if(p.startsWith('+61'))p='0'+p.slice(3);else if(p.startsWith('61')&&p.length>=11)p='0'+p.slice(2);p=p.replace(/\D/g,'');
+ if(/^04\d{8}$/.test(p))return p.slice(0,4)+'-'+p.slice(4,7)+'-'+p.slice(7);
+ if(/^0[2378]\d{8}$/.test(p))return p.slice(0,2)+'-'+p.slice(2,6)+'-'+p.slice(6);return p;}
+function dateRange(a,b){const out=[];if(!a||!b)return out;let d=new Date(a+'T00:00:00Z'),e=new Date(b+'T00:00:00Z');if(e<d||((e-d)/864e5)>90)return out;while(d<=e){out.push(d.toISOString().slice(0,10));d=new Date(d.getTime()+864e5);}return out;}
+const fmtDate=iso=>{const d=new Date(iso+'T00:00:00Z');return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});};
+const wk=iso=>new Date(iso+'T00:00:00Z').toLocaleDateString('en-GB',{weekday:'short',timeZone:'UTC'});
+
+function mountTypes(){$('#types').innerHTML=TYPES.map(t=>`<label><input type="radio" name="type" value="${t.id}" ${state.type===t.id?'checked':''}>${t.name}</label>`).join('');}
+function mountFields(){document.querySelectorAll('[data-k]').forEach(el=>{const v=state.f[el.dataset.k];if(v!==undefined)el.value=v;});}
+function mountAccs(){$('#accs').innerHTML=state.accs.map((a,i)=>`<div class="acc-row" data-i="${i}">
+<label>入住日期<input type="date" data-a="in" value="${esc(a.in)}"></label>
+<label>退房日期<input type="date" data-a="out" value="${esc(a.out)}"></label>
+<label>住宿名称<input data-a="name" value="${esc(a.name)}" placeholder="Example Hostel"></label>
+<label>英文地址<input data-a="addr" value="${esc(a.addr)}" placeholder="1-2-3 Asakusa, Taito-ku, Tokyo"></label>
+<label>电话<input data-a="tel" value="${esc(a.tel)}" placeholder="03-1234-5678"></label>
+<button type="button" data-del="${i}" aria-label="删除这家住宿" ${state.accs.length<2?'disabled':''}>删除</button></div>`).join('');}
+function mountDays(){const ds=dateRange(state.f.entry,state.f.exit);$('#days').innerHTML=ds.length?ds.map(d=>`<div class="day-row"><div class="d">${fmtDate(d)} (${wk(d)})</div><input data-day="${d}" value="${esc(state.days[d]||'')}" placeholder="Senso-ji Temple, Tokyo Skytree, Ueno Park"></div>`).join(''):'<p class="note">先在 STEP 4 填入境和离境日期。</p>';}
+
+function accFor(d){return state.accs.find(a=>a.in&&a.out&&d>=a.in&&d<a.out);}
+function type(){return TYPES.find(t=>t.id===state.type)||TYPES[0];}
+
+function issues(){const f=state.f,t=type(),L=[];const push=(c,s)=>L.push([c,s]);
+ if(t.id==='citizen'){push('good','用澳洲护照的澳洲公民，短期旅游不需要日本签证，不用申请。');return L;}
+ if(f.fromAU==='no')push('bad','去程要从澳洲出发。领事馆要求提交澳洲 → 日本的机票确认单。');
+ if(f.toAU==='no')push('warn','回程不回澳洲，要另附一封英文说明信。');
+ if(!f.pnr)push('bad','还没有填 PNR。机票确认单上必须有航空公司 6 位预订号，第三方平台"待付款"订单一般没有。');
+ else if(!/^[A-Z0-9]{6}$/i.test(f.pnr.trim()))push('warn','PNR 一般是 6 位字母数字，检查一下有没有填错。');
+ if(f.entry&&f.exit&&f.exit<f.entry)push('bad','离境日期早于入境日期。');
+ if(f.entry&&f.exit&&dateRange(f.entry,f.exit).length===0&&f.exit>=f.entry)push('warn','停留超过 90 天，旅游签证一般最多 90 天。');
+ if(f.expiry&&f.exit&&f.expiry<=f.exit)push('bad','护照在离开日本之前就到期了，要先换护照。');
+ if(!f.surname||!f.given)push('warn','姓名还没填完。');
+ const ds=dateRange(f.entry,f.exit);
+ const nights=ds.slice(0,-1).filter(d=>!accFor(d));
+ if(ds.length&&nights.length)push('bad',`这几晚没有住宿：${nights.map(fmtDate).join('、')}。每晚都要有住宿，换住宿就加一行。`);
+ state.accs.forEach((a,i)=>{if(a.name&&!a.tel)push('warn',`第 ${i+1} 家住宿没有电话。`);if((a.tel||'').includes('+'))push('warn','住宿电话不能带 +，下面的对照表已经帮你转成日本格式。');});
+ const empty=ds.filter(d=>!(state.days[d]||'').trim());
+ if(ds.length&&empty.length)push('warn',`有 ${empty.length} 天还没写去哪里。每天都要写具体景点，不能只写城市名。`);
+ if((f.addr||'').length>250)push('warn','现住址超过 250 个字符。');
+ state.accs.forEach(a=>{if((a.addr||'').length>100)push('warn','住宿地址超过 100 个字符，网站会报错。');});
+ if(t.id==='bridging')push('warn','持 Bridging visa A 的，要先申请 Bridging visa B 才能交日本签证。');
+ if(!L.length)push('good','没发现问题，可以去准备材料了。');return L;}
+
+function checklist(){const t=type(),L=[];
+ if(t.id==='citizen')return ['短期旅游免签，不需要准备签证材料。入境前可以填 Visit Japan Web。'];
+ L.push('证件照：35×45mm，纯色浅色背景，正脸，表情自然不笑，不要美颜和滤镜。网站没公布大小上限，实测约 120KB 能传、约 160KB 被拒，建议压到 100KB 左右。上传后如提示 "Cut out a facial photo manually"，要手动框住整个头。');
+ L.push('护照资料页 + 资料页上面那一页的扫描件。');
+ L.push('往返机票确认单：澳洲 ⇄ 日本，有你的全名、进出日本的日期和时间、航班号和 PNR。要求已确认，不要求已付款。');
+ L.push(t.id==='unemployed'?'银行流水：有户名、现住址、最近 3 个月交易记录，余额日期在 1 个月内。没有收入的话余额要够付旅费；用家人的钱要另附关系证明（出生证 / 结婚证）。':'银行流水：有户名、现住址、最近 3 个月交易记录，余额日期在 1 个月内，余额足够。地址要和上面填的现住址一致。');
+ L.push('英文行程表（RESULT 3 生成）+ 住宿确认单，合并成一个 PDF 上传到 Schedule of stay。');
+ L.push(t.id==='bridging'?'VEVO + 澳洲签证申请受理信（Acknowledgement letter），在 immi.homeaffairs.gov.au 查。':'VEVO：在澳洲移民局官网 immi.homeaffairs.gov.au 查，存成 PDF。');
+ if(t.id==='student')L.push('在读证明（学生签必交）：不收 COE；有效学生卡正反面可以，加一份学校的 Statement of Enrolment 更稳。');
+ else L.push('在读证明那一栏不用传（只有学生签需要）。官网没有要求在职证明。');
+ return L;}
+
+function rows(){const f=state.f,t=type(),a0=state.accs.find(a=>a.name)||{};const emp=t.emp==='none'?'（勾 Check here if none）':null;
+ const occ=t.occ||'按实际情况选';
+ return [
+ ['Basic information',[
+  ['Facial photo','上传证件照文件'],['Passport','上传护照资料页 + 上一页扫描件'],
+  ['Family name',up(f.surname)],['Given and middle names',up(f.given)],['Date of Birth',ymd(f.dob)],
+  ['Nationality or citizenship','CHINA'],['Passport number','（自己照护照输入）'],['Gender',f.sex==='M'?'Male(M)':f.sex==='F'?'Female(F)':''],
+  ['Passport expiry date',ymd(f.expiry)],['National ID number','（可选，自己输入）'],['Passport type','Ordinary'],
+  ['Place where the passport was issued',up(f.issuePlace)],['Date when the passport was issued',ymd(f.issue)],
+  ['Government office that issued the passport',up(f.authority)],['Former family name','（没有就勾 Check here if none）'],['Former given name','（没有就勾 Check here if none）'],
+  ['Hanzi family name',f.hanziSur||''],['Hanzi given name',f.hanziGiven||''],['Former and/or other nationalities','None'],
+  ['Place of Birth',up(f.pob)],['Marriage status',f.marital||''],['Occupation of the applicant',occ],
+  ['Occupation of the spouse',f.marital==='Married'?'按配偶实际情况选':'None'],['Purpose of visit','Tourism → Tourism'],['Number of times the visa is valid','SINGLE']]],
+ ['Travel information',[
+  ['Scheduled date of entry into Japan',ymd(f.entry)],['Scheduled date of departure from Japan',ymd(f.exit)],
+  ['Name of ship or airline',up(f.flightIn)],['Port of entry into Japan',up(f.port)],
+  ['Accommodation or hotel name',up(a0.name)],['Telephone number of the accommodation',jpPhone(a0.tel)],
+  ['Address of the accommodation',up(a0.addr)],['Total number of days stayed in the last year',(+f.daysJP||0)===0?'0（勾 Check here if there were no days stayed）':String(f.daysJP)]]],
+ ['Address',[
+  ['Country or region','Australia'],['State',f.state||''],['Current address',up(f.addr)?up(f.addr)+', AUSTRALIA':''],
+  ['Mobile Number',auPhone(f.mobile)],['Email address',f.email||''],
+  ['Name of the employer',emp||up(f.empName)],['Telephone number of the employer',emp||auPhone(f.empPhone)],['Address of the employer',emp||up(f.empAddr)]]],
+ ['Background check',[
+  ['Special reasons for visa application','旅游一般勾 Check here if none'],
+  ['6 道背景题（犯罪、监禁、遣返、毒品、卖淫、人口贩卖）','按真实情况自己选'],
+  ['Will the applicant\'s travel expenses be self-funded?','自己出钱选 Yes'],['Is the applicant a minor?','未满 18 岁选 Yes，否则 No'],['Are you the applicant yourself?','本人申请选 Yes']]],
+ ['Supporting documents',[
+  ['Itinerary with flight information','机票确认单 PDF（带 PNR）'],['Document to prove the ability to pay','银行流水 PDF'],
+  ['Schedule of stay','行程表 + 住宿确认单合并的 PDF'],['Proof of enrollment',t.id==='student'?'在读证明 + 学生卡 PDF':'不用传'],
+  ['VEVO',t.id==='bridging'?'VEVO + 签证申请受理信':'VEVO PDF']]]];}
+
+function renderFields(){$('#fields').innerHTML=rows().map(([g,rs])=>`<h3>${esc(g)}</h3><table><thead><tr><th style="width:42%">网站栏目</th><th>填写</th><th></th></tr></thead><tbody>${rs.map(([k,v])=>{const plain=v&&(!/[\u4e00-\u9fff]/.test(v)||k.startsWith('Hanzi'));return `<tr><td>${esc(k)}</td><td class="val">${esc(v)||'<span class="warn">还没填</span>'}</td><td>${plain?`<button type="button" class="copy" data-copy="${esc(v)}">复制</button>`:''}</td></tr>`}).join('')}</tbody></table>`).join('');}
+
+function renderSchedule(){const f=state.f,ds=dateRange(f.entry,f.exit);const name=[up(f.surname),up(f.given)].filter(Boolean).join(' ');
+ const uniq=[...new Map(state.accs.filter(a=>a.name).map(a=>[a.name,a])).values()];
+ const accLine=uniq.map(a=>[esc(a.name),esc(a.addr||'')].filter(Boolean).join(', ')+(a.tel?`. Tel: ${esc(jpPhone(a.tel))}`:'')).join('<br>');
+ const body=ds.map((d,i)=>{let act=state.days[d]||'';const last=i===ds.length-1;
+  if(i===0&&f.flightIn)act=`Arrive at ${f.port} on ${f.flightIn}${f.flightInTime?' ('+f.flightInTime+')':''}. `+act;
+  if(last&&f.flightOut)act=act+(act?' ':'')+`Depart from Japan on ${f.flightOut}${f.flightOutTime?' ('+f.flightOutTime+')':''}.`;
+  const a=accFor(d);const acc=last?'-':a?`${esc(a.name)}<br>Tel: ${esc(jpPhone(a.tel))}`:'';
+  return `<tr><td>${fmtDate(d)}</td><td>${esc(act)}</td><td>${acc}</td></tr>`;}).join('');
+ $('#schedule').innerHTML=`<h4>Schedule of Stay in Japan</h4>
+ <p>Name: ${esc(name)}</p><p>Purpose of visit: Tourism</p>
+ <p>Period of stay: ${f.entry?fmtDate(f.entry):''} - ${f.exit?fmtDate(f.exit):''}${ds.length?` (${ds.length-1} nights)`:''}</p>
+ <p>Flights: ${esc(f.flightIn||'')} / ${esc(f.flightOut||'')}${f.pnr?`, booking reference (PNR) ${esc(up(f.pnr))}`:''}</p>
+ <p>Accommodation: ${accLine}</p>
+ <table><thead><tr><th style="width:22%">Date</th><th>Activities</th><th style="width:28%">Accommodation</th></tr></thead><tbody>${body||'<tr><td colspan="3">请先填写日期</td></tr>'}</tbody></table>`;}
+
+function render(){const t=type();$('#empNameL').firstChild.textContent=t.emp==='school'?'学校名称':t.emp==='none'?'学校 / 公司名称（没有可以不填）':'公司名称';
+ $('#issues').innerHTML=issues().map(([c,s])=>`<li class="${c}">${c==='good'?'✅':c==='bad'?'❌':'⚠️'} ${esc(s)}</li>`).join('');
+ $('#checklist').innerHTML=checklist().map(s=>`<li>${esc(s)}</li>`).join('');
+ renderSchedule();renderFields();save();}
+
+document.addEventListener('input',e=>{const el=e.target;
+ if(el.dataset.k){state.f[el.dataset.k]=el.value;if(el.dataset.k==='entry'||el.dataset.k==='exit')mountDays();render();}
+ else if(el.dataset.a){const i=+el.closest('.acc-row').dataset.i;state.accs[i][el.dataset.a]=el.value;render();}
+ else if(el.dataset.day){state.days[el.dataset.day]=el.value;render();}
+ else if(el.name==='type'){state.type=el.value;render();}});
+document.addEventListener('change',e=>{if(e.target.name==='type'){state.type=e.target.value;render();}});
+document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.copy!==undefined){try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200);}catch(err){prompt('复制下面的内容：',b.dataset.copy);}}
+ else if(b.dataset.del!==undefined){state.accs.splice(+b.dataset.del,1);mountAccs();render();}});
+$('#addAcc').onclick=()=>{const last=state.accs[state.accs.length-1]||{};state.accs.push({in:last.out||''});mountAccs();render();};
+$('#printBtn').onclick=()=>window.print();
+$('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-japan-evisa-info.json';a.click();URL.revokeObjectURL(a.href);};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=async e=>{try{const p=JSON.parse(await e.target.files[0].text());if(!p.f)throw 0;state=Object.assign({type:'student',f:{},accs:[{}],days:{}},p);mountAll();$('#msg').textContent='已导入。';}catch(err){$('#msg').textContent='文件格式不对，导入失败。';}};
+$('#clearBtn').onclick=()=>{if(confirm('清空所有已填写的内容？')){try{localStorage.removeItem(KEY);}catch(e){}location.reload();}};
+function mountAll(){mountTypes();mountFields();mountAccs();mountDays();render();}
+mountAll();
+</script>
+</body>
+</html>
