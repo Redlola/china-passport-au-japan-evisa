@@ -124,7 +124,7 @@ main{max-width:1120px;padding:28px 32px 70px}.top{border-top:4px solid var(--ink
 <section class="card">
 <div class="step">STEP 2</div>
 <h2>个人信息（照护照填）</h2>
-<p class="note">姓名按护照底部两行机读码填，会自动转成大写。</p>
+<p class="note">英文姓、名请照护照机读码填写拼音，不自行翻译；输出会转成大写。中文姓、中文名栏保留汉字。</p>
 <div class="grid">
 <label>护照号 <small>可选 · 仅当前页面；填写后会纳入 AI 指令</small><input id="passportNumber" autocomplete="off" spellcheck="false" maxlength="20" placeholder="不填则在官网自行输入"></label><label>姓 Family name<input data-k="surname" placeholder="ZHANG"></label>
 <label>名 Given names<input data-k="given" placeholder="SAN"></label>
@@ -144,6 +144,7 @@ main{max-width:1120px;padding:28px 32px 70px}.top{border-top:4px solid var(--ink
 <section class="card">
 <div class="step">STEP 3</div>
 <h2>在澳洲的信息</h2>
+<p class="note">地址、学校和公司请使用官方英文名称。地址按门牌号、街道、区、州、邮编填写，例如 12 Example Street, Leederville WA 6007。本站不自动翻译。</p>
 <div class="grid">
 <label>现住址 <small>门牌号 街道, 区 州 邮编</small><input data-k="addr" placeholder="12 Example Street, Leederville WA 6007"></label>
 <label>所在州<select data-k="state"><option>Western Australia</option><option>New South Wales</option><option>Victoria</option><option>Queensland</option><option>South Australia</option><option>Tasmania</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
@@ -178,7 +179,7 @@ main{max-width:1120px;padding:28px 32px 70px}.top{border-top:4px solid var(--ink
 <section class="card">
 <div class="step">STEP 5</div>
 <h2>住宿</h2>
-<p class="note">电话写日本的格式，比如 03-1234-5678，会自动去掉 +81。</p>
+<p class="note">住宿名称和地址请复制预订单上的英文或罗马字，不自行猜译。电话如 03-1234-5678；输出会把 +81 转为日本国内格式。</p>
 <div id="accs"></div>
 <div class="row-actions"><button type="button" id="addAcc">＋ 再加一家住宿</button></div>
 </section>
@@ -186,14 +187,14 @@ main{max-width:1120px;padding:28px 32px 70px}.top{border-top:4px solid var(--ink
 <section class="card">
 <div class="step">STEP 6</div>
 <h2>每天去哪里</h2>
-<p class="note">填好入境和离境日期后会自动出现每一天。写具体景点，不要只写城市名，用英文写最好。</p>
+<p class="note">填好日期后会出现每一天。用于行程表的活动请写英文，例如 Visit Senso-ji Temple and Ueno Park。可先写中文草稿，再复制 AI 指令让 AI 提供译文；核对后手动填回，本站不会自动翻译或回填。</p>
 <div id="days"></div>
 </section>
 
 <section class="card">
 <div class="step">RESULT 1</div>
 <h2>检查结果</h2>
-<ul class="issues" id="issues"></ul>
+<p class="note">格式提醒仅检测中日韩文字，不代表其他内容已符合英文或官网要求。日期输出为 YYYYMMDD，行程 PDF 使用英文日期；姓名拼写请始终以护照为准。</p><ul class="issues" id="issues"></ul>
 </section>
 
 <section class="card">
@@ -311,7 +312,24 @@ function mountDays(){const ds=dateRange(state.f.entry,state.f.exit);$('#days').i
 function accFor(d){return state.accs.find(a=>a.in&&a.out&&d>=a.in&&d<a.out);}
 function type(){return TYPES.find(t=>t.id===state.type)||TYPES[0];}
 
+const ENGLISH_FIELDS={surname:'英文姓',given:'英文名',pob:'出生地',issuePlace:'护照签发地',authority:'签发机关',addr:'现住址',empName:'学校 / 公司名称',empAddr:'学校 / 公司地址',flightIn:'去程航班',flightOut:'回程航班'};
+const hasCJK=v=>/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(v||'');
+function languageWarnings(scheduleOnly=false){
+ const out=[];
+ for(const [k,label] of Object.entries(ENGLISH_FIELDS)){if(scheduleOnly&&!['surname','given','flightIn','flightOut'].includes(k))continue;if(hasCJK(state.f[k]))out.push(label);}
+ state.accs.forEach((a,i)=>{for(const [k,label] of [['name','住宿名称'],['addr','住宿地址']])if(hasCJK(a[k]))out.push(`第 ${i+1} 家${label}`);});
+ dateRange(state.f.entry,state.f.exit).forEach(d=>{if(hasCJK(state.days[d]))out.push(`${d} 活动`);});return out;
+}
+function renderLanguageHints(){
+ document.querySelectorAll('[data-k],[data-a],[data-day]').forEach(el=>{
+ const relevant=Object.hasOwn(ENGLISH_FIELDS,el.dataset.k||'')||['name','addr'].includes(el.dataset.a)||!!el.dataset.day;
+ const warn=relevant&&hasCJK(el.value);let hint=el.parentElement.querySelector('.language-hint');
+ if(warn&&!hint){hint=document.createElement('small');hint.className='language-hint bad';hint.id='lang-'+(el.dataset.k||el.dataset.day||el.closest('[data-i]').dataset.i+'-'+el.dataset.a);hint.style.display='block';el.insertAdjacentElement('afterend',hint);el.setAttribute('aria-describedby',hint.id);}
+ if(hint){hint.textContent=warn?'含中文或其他东亚文字：这是草稿，未自动翻译。请核对英文 / 罗马字后再使用。':'';hint.hidden=!warn;}
+ });
+}
 function issues(){const f=state.f,t=type(),L=[];const push=(c,s)=>L.push([c,s]);
+ const lw=languageWarnings();if(lw.length)push('warn','以下栏目尚有非英文草稿：'+lw.join('、')+'。本站不自动翻译，请核对后填回英文。');
  if(t.id==='citizen'){push('good','用澳洲护照的澳洲公民，短期旅游不需要日本签证，不用申请。');return L;}
  if(f.state!=='Western Australia')push('warn','本材料参考珀斯要求，其他州请核对所属领事馆。');
  if(f.toAU!=='yes')push('warn','回程不回澳洲，要另附一封英文说明信。');
@@ -395,7 +413,7 @@ function renderSchedule(){const f=state.f,ds=dateRange(f.entry,f.exit);const nam
 function render(){const t=type();$('#empNameL').firstChild.textContent=t.emp==='school'?'学校名称':t.emp==='none'?'学校 / 公司名称（没有可以不填）':'公司名称';
  $('#issues').innerHTML=issues().map(([c,s])=>`<li class="${c}">${c==='good'?'✅':c==='bad'?'❌':'⚠️'} ${esc(s)}</li>`).join('');
  $('#checklist').innerHTML=checklist().map(s=>`<li>${esc(s)}</li>`).join('');
- renderSchedule();renderFields();if(typeof renderAI==='function'){renderAI();}if(typeof mountDrops==='function'&&window._lastType!==state.type){window._lastType=state.type;mountDrops();}save();}
+ renderSchedule();renderFields();renderLanguageHints();if(typeof renderAI==='function'){renderAI();}if(typeof mountDrops==='function'&&window._lastType!==state.type){window._lastType=state.type;mountDrops();}save();}
 
 document.addEventListener('input',e=>{const el=e.target;
  if(el.id==='passportNumber'){renderAI();renderFields();return;}
@@ -408,7 +426,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('button');i
  if(b.dataset.copy!==undefined){try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200);}catch(err){prompt('复制下面的内容：',b.dataset.copy);}}
  else if(b.dataset.del!==undefined){state.accs.splice(+b.dataset.del,1);mountAccs();render();}});
 $('#addAcc').onclick=()=>{const last=state.accs[state.accs.length-1]||{};state.accs.push({in:last.out||''});mountAccs();render();};
-$('#printBtn').onclick=()=>{if(!dateRange(state.f.entry,state.f.exit).length){alert('请先填写有效的入境与离境日期，再打印行程。');return;}window.print();};
+$('#printBtn').onclick=()=>{if(!dateRange(state.f.entry,state.f.exit).length){alert('请先填写有效的入境与离境日期，再打印行程。');return;}const lw=languageWarnings(true);if(lw.length){alert('行程表仍有待转换的文字：'+lw.join('、')+'。请核对英文后再保存 PDF。可复制 AI 指令获取译文，确认后手动填回。');return;}window.print();};
 $('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-japan-evisa-info.json';a.click();URL.revokeObjectURL(a.href);};
 $('#importBtn').onclick=()=>$('#importFile').click();
 $('#importFile').onchange=async e=>{try{const p=JSON.parse(await e.target.files[0].text());const next=cleanState(p);state=next;$('#passportNumber').value='';mountAll();$('#msg').textContent='已导入。';}catch(err){$('#msg').textContent='文件格式不对，导入失败。';}};
@@ -483,6 +501,10 @@ function aiPrompt(){const t=type();if(t.id==='citizen')return '用澳洲护照�
  const R=rows();const bg=$('#bgNo')?.checked,sf=$('#selfFund')?.checked,me=$('#isSelf')?.checked;const a=age();
  const L=[];
  L.push('请你用浏览器帮我在日本外务省 JAPAN eVISA 网站（https://www.evisa.mofa.go.jp ）填写一份短期旅游签证申请。只在这个官网上操作。');
+ L.push('');L.push('【语言与格式：先检查，再填表】');
+ const lw=languageWarnings();
+ if(lw.length)L.push('以下字段含未翻译草稿：'+lw.join('、')+'。先给我原文 → 建议英文对照，等待我确认；在确认前不要把这些字段填入官网，也不要声称英文行程表已就绪。提醒我把确认的英文手动填回本工具后重新生成 PDF。');
+ L.push('英文姓名仅照护照机读码拼写，不自行翻译或猜测拼音。中文姓名栏保留中文。学校、公司、酒店和地址优先使用证件、官网或预订单的官方英文 / 罗马字；不确定时让我提供。活动可翻译但不增加未提供的行程。日期、电话按官网实际格式核对。');
  L.push('');L.push('【必须遵守】');
  L.push('1. 登录账号由我自己完成。如果没登录，停下来让我登录。');
  L.push($('#passportNumber').value.trim()?'2. 仅使用下方本人提供的护照号。身份证号等未提供的号码停下来让我输入，不要猜测或从文件推断。':'2. 未提供护照号。到 Passport number 停下来让我输入；不要猜测证件号码。');
@@ -520,7 +542,7 @@ const NEED=[['surname','姓'],['given','名'],['dob','出生日期'],['sex','性
 function missing(){const m=NEED.filter(([k])=>!(state.f[k]||'').trim()).map(x=>x[1]);if(!state.accs.some(a=>a.name&&a.tel&&a.addr))m.push('住宿名称 / 地址 / 电话');if(type().emp!=='none'&&!(state.f.empName||'').trim())m.push(type().emp==='school'?'学校名称':'公司名称');return m;}
 function renderAI(){const el=$('#aiPrompt');if(el)el.value=aiPrompt();const mm=$('#aiMissing');if(mm){const m=missing();mm.textContent=m.length?`还有 ${m.length} 项没填：${m.join('、')}。先回到上面补上，AI 就不用停下来问你。`:'';}}
 document.addEventListener('change',e=>{if(['bgNo','selfFund','isSelf'].includes(e.target.id))renderAI();});
-$('#copyAI').onclick=async()=>{const m=missing();if(m.length&&!confirm(`还有 ${m.length} 项没填：${m.join('、')}。\n没填的栏目 AI 会停下来问你。仍然要复制吗？`))return;const v=aiPrompt();try{await navigator.clipboard.writeText(v);$('#copyAI').textContent='已复制，发给 AI 吧';setTimeout(()=>$('#copyAI').textContent='复制给 AI 的填表指令',1800);}catch(e){$('#aiPrompt').select();}};
+$('#copyAI').onclick=async()=>{const lw=languageWarnings();if(lw.length&&!confirm('检测到未翻译草稿：'+lw.join('、')+'。复制的指令会要求 AI 先提供译文、等你确认，本站不会自动回填。继续复制？'))return;const m=missing();if(m.length&&!confirm(`还有 ${m.length} 项没填：${m.join('、')}。\n没填的栏目 AI 会停下来问你。仍然要复制吗？`))return;const v=aiPrompt();try{await navigator.clipboard.writeText(v);$('#copyAI').textContent='已复制，发给 AI 吧';setTimeout(()=>$('#copyAI').textContent='复制给 AI 的填表指令',1800);}catch(e){$('#aiPrompt').select();}};
 
 mountAll();
 </script>
